@@ -1,0 +1,16 @@
+body {
+  background-color: #f4f7f4;
+}
+
+main {
+  margin-top: 30px;
+}
+
+.card-image img {
+  height: 220px;
+  object-fit: cover;
+}
+
+h3 {
+  font-weight: 600;
+}
