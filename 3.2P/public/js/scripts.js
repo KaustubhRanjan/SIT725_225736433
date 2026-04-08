@@ -42,7 +42,6 @@ $('#formSubmit').click(function () {
     .then(data => {
       displayRecipes(data);
 
-      // CLOSE MODAL AFTER SUBMIT
       const modal = M.Modal.getInstance($('#modal1'));
       modal.close();
     });
