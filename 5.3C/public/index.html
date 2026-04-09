@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Books Catalogue</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f5f7fa;
+    }
+
+    button {
+        background: linear-gradient(135deg, #007BFF, #0056b3);
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+}
+
+    button:hover {
+        opacity: 0.9;
+}
+
+    #bookList p {
+
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        width: 350px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        cursor: pointer;
+        margin: 6px 0;
+    }
+
+    #bookList p:hover {
+        background-color: #cfe2ff;
+}
+
+    #bookDetails {
+       margin-top: 20px;
+       background: #ffffff;
+       border-left: 5px solid #007BFF;
+       padding: 15px;
+       border-radius: 8px;
+       width: 350px;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h2>Books Catalogue developed by s225736433</h2>
+  <p>Click the button below to get all books items from the server:</p>
+
+  <button onclick="getBooks()">Get all books</button>
+
+  <div id="bookList"></div>
+  <div id="bookDetails"></div>
+
+  <script>
+    async function getBooks() {
+      try {
+        const response = await fetch('/api/books');
+        const books = await response.json();
+
+        const listDiv = document.getElementById('bookList');
+        const detailsDiv = document.getElementById('bookDetails');
+
+        listDiv.innerHTML = '';
+        detailsDiv.innerHTML = '';
+
+        books.forEach(book => {
+          const price = book.price.$numberDecimal;
+          const item = document.createElement('p');
+          item.textContent = `${book.title} ${price} AUD`;
+          item.onclick = () => getBookDetails(book.id);
+          listDiv.appendChild(item);
+        });
+      } catch (error) {
+        console.log('Error loading books:', error);
+      }
+    }
+
+    async function getBookDetails(id) {
+      try {
+        const response = await fetch(`/api/books/${id}`);
+        const book = await response.json();
+
+        const price = book.price.$numberDecimal;
+
+        document.getElementById('bookDetails').innerHTML = `
+          <p><strong>Title:</strong> ${book.title}</p>
+          <p><strong>Author:</strong> ${book.author}</p>
+          <p><strong>Year:</strong> ${book.year}</p>
+          <p><strong>Genre:</strong> ${book.genre}</p>
+          <p><strong>Summary:</strong> ${book.summary}</p>
+          <p><strong>Price (AUD):</strong> ${price}</p>
+        `;
+      } catch (error) {
+        console.log('Error loading book details:', error);
+      }
+    }
+  </script>
+</body>
+</html>
