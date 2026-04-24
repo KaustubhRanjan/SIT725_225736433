@@ -308,6 +308,168 @@ async function run() {
     tags: []
   });
 
+  await test({
+  id: "T17",
+  name: "Invalid ID format on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`x123`) },
+  tags: ["CREATE_FAIL", "TYPE"]
+});
+
+await test({
+  id: "T18",
+  name: "Author too short on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now() + 7}`), author: "AB" },
+  tags: ["CREATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T19",
+  name: "Author too long on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now() + 8}`), author: "A".repeat(81) },
+  tags: ["CREATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T20",
+  name: "Genre too short on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now() + 9}`), genre: "AB" },
+  tags: ["CREATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T21",
+  name: "Genre too long on UPDATE",
+  method: "PUT",
+  path: updatePath(uniqueId),
+  expected: 400,
+  body: { ...makeValidUpdate(), genre: "A".repeat(41) },
+  tags: ["UPDATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T22",
+  name: "Title too long on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now() + 10}`), title: "T".repeat(101) },
+  tags: ["CREATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T23",
+  name: "Summary too long on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now() + 11}`), summary: "S".repeat(501) },
+  tags: ["CREATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T24",
+  name: "Price zero on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now() + 12}`), price: "0" },
+  tags: ["CREATE_FAIL", "BOUNDARY"]
+});
+
+await test({
+  id: "T25",
+  name: "Price negative on UPDATE",
+  method: "PUT",
+  path: updatePath(uniqueId),
+  expected: 400,
+  body: { ...makeValidUpdate(), price: "-5.00" },
+  tags: ["UPDATE_FAIL", "BOUNDARY"]
+});
+
+await test({
+  id: "T26",
+  name: "Future year on UPDATE",
+  method: "PUT",
+  path: updatePath(uniqueId),
+  expected: 400,
+  body: { ...makeValidUpdate(), year: new Date().getFullYear() + 1 },
+  tags: ["UPDATE_FAIL", "TEMPORAL"]
+});
+
+await test({
+  id: "T27",
+  name: "Missing author on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: (() => {
+    const b = makeValidBook(`b${Date.now()+20}`);
+    delete b.author;
+    return b;
+  })(),
+  tags: ["CREATE_FAIL", "REQUIRED"]
+});
+
+await test({
+  id: "T28",
+  name: "Missing summary on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: (() => {
+    const b = makeValidBook(`b${Date.now()+21}`);
+    delete b.summary;
+    return b;
+  })(),
+  tags: ["CREATE_FAIL", "REQUIRED"]
+});
+
+await test({
+  id: "T29",
+  name: "Missing price on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: (() => {
+    const b = makeValidBook(`b${Date.now()+22}`);
+    delete b.price;
+    return b;
+  })(),
+  tags: ["CREATE_FAIL", "REQUIRED"]
+});
+
+await test({
+  id: "T30",
+  name: "Genre too long on CREATE",
+  method: "POST",
+  path: createPath,
+  expected: 400,
+  body: { ...makeValidBook(`b${Date.now()+23}`), genre: "A".repeat(41) },
+  tags: ["CREATE_FAIL", "LENGTH"]
+});
+
+await test({
+  id: "T31",
+  name: "Author too long on UPDATE",
+  method: "PUT",
+  path: updatePath(uniqueId),
+  expected: 400,
+  body: { ...makeValidUpdate(), author: "A".repeat(81) },
+  tags: ["UPDATE_FAIL", "LENGTH"]
+});
+
   const pass = logSummary();
   logCoverage();
 

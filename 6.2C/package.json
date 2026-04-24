@@ -1,0 +1,18 @@
+{
+  "name": "6.2C",
+  "version": "1.0.0",
+  "description": "SIT725 6.2C testing task",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha \"test/**/*.js\""
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.8.2",
+    "supertest": "^7.2.2"
+  }
+}
